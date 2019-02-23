@@ -63,7 +63,7 @@ class PagesController extends AppController
             if (Configure::read('debug')) {
                 throw $exception;
             }
-            throw new NotFoundException ();
+            throw new NotFoundException();
         }
     }
 }
