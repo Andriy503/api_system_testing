@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use App\Controller\Component\CoreComponent;
 
 /**
  * Application Controller
@@ -45,6 +46,7 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+        $this->loadComponent('Core');
 
         /*
          * Enable the following component for recommended CakePHP security settings.

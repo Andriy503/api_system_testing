@@ -14,6 +14,7 @@
  */
 namespace App;
 
+use App\Middleware\CorsMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
@@ -73,6 +74,9 @@ class Application extends BaseApplication
             ->add(new AssetMiddleware([
                 'cacheTime' => Configure::read('Asset.cacheTime')
             ]))
+
+            // Add CORS middleware.
+            ->add(CorsMiddleware::class)
 
             // Add routing middleware.
             // Routes collection cache enabled by default, to disable route caching
