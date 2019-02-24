@@ -11,7 +11,17 @@ use App\Controller\AppController;
  */
 class TestController extends AppController
 {
+    public function initialize() {
+        parent::initialize();
+
+        $this->loadModel('AdminUsers');
+    }
+
     public function show () {
-        return $this->Core->jsonResponse(true, 'Its work!!!');
+        $adminUsers = $this->AdminUsers->find()->all();
+
+        return $this->Core->jsonResponse(true, 'Its work!!!',[
+            'adminUsers' => $adminUsers
+        ]);
     }
 }
