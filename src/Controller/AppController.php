@@ -42,6 +42,33 @@ class AppController extends Controller
     {
         parent::initialize();
 
+        $this->loadComponent('Auth', [
+            'storage' => 'Memory',
+            'authenticate' => [
+                'ADmad/JwtAuth.Jwt' => [
+                    'userModel' => 'AdminUsers',
+                    'fields' => [
+                        'username' => 'id'
+                    ],
+                    'finder' => 'auth',
+
+                    'parameter' => 'token',
+
+                    // Boolean indicating whether the "sub" claim of JWT payload
+                    // should be used to query the Users model and get user info.
+                    // If set to `false` JWT's payload is directly returned.
+                    'queryDatasource' => true,
+                ]
+            ],
+
+            'unauthorizedRedirect' => false,
+            'checkAuthIn' => 'Controller.initialize',
+
+            // If you don't have a login action in your application set
+            // 'loginAction' to false to prevent getting a MissingRouteException.
+            'loginAction' => false
+        ]);
+
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
@@ -52,6 +79,6 @@ class AppController extends Controller
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
-        //$this->loadComponent('Security');
+        // $this->loadComponent('Security');
     }
 }

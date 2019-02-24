@@ -55,16 +55,21 @@ Router::scope('/', function (RouteBuilder $routes) {
      * Apply a middleware to the current route scope.
      * Requires middleware to be registered via `Application::routes()` with `registerMiddleware()`
      */
-    $routes->applyMiddleware('csrf');
+    // $routes->applyMiddleware('csrf');
 
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
-    $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+    // $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
-    $routes->connect('/show', ['controller' => 'Test', 'action' => 'show']);
+    // start my routes
+        // $routes->resources('AdminUsers');
+        $routes->connect('/show', ['controller' => 'Test', 'action' => 'show']);
+        $routes->connect('/users', ['controller' => 'AdminUsers', 'action' => 'login']);
+
+    // end my routes
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
