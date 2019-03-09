@@ -21,13 +21,6 @@ class TestController extends AppController
     public function show () {
         $adminUsers = $this->AdminUsers->find()->all();
 
-        $new = $this->AdminUsers->newEntity([
-            'login' => 'sokol',
-            'password' => 'sokol'
-        ]);
-
-        $this->AdminUsers->save($new);
-
         return $this->Core->jsonResponse(true, 'Its work!!!',[
             'adminUsers' => $adminUsers
         ]);
