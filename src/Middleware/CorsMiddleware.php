@@ -16,6 +16,9 @@ class CorsMiddleware
             ->withHeader('Access-Control-Allow-Headers', Configure::read('CORS.accessControlAllowHeaders', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'))
             ->withHeader('Access-Control-Allow-Credentials', Configure::read('CORS.accessControlAllowCredentials', 'false'));
 
+        if ($request->is('options')) {
+            return $response;
+        }
 
         return $next($request, $response);
     }

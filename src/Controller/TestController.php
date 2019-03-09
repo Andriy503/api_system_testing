@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\Query;
 
 /**
  * Test Controller
@@ -13,7 +14,7 @@ class TestController extends AppController
 {
     public function initialize() {
         parent::initialize();
-
+        // $this->loadComponent('RequestHandler');
         $this->loadModel('AdminUsers');
     }
 
@@ -23,5 +24,9 @@ class TestController extends AppController
         return $this->Core->jsonResponse(true, 'Its work!!!',[
             'adminUsers' => $adminUsers
         ]);
+    }
+
+    public function test () {
+        return $this->Core->jsonResponse(true, 'Post request success!');
     }
 }

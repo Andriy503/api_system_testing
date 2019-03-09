@@ -50,7 +50,7 @@ class AppController extends Controller
                     'fields' => [
                         'username' => 'id'
                     ],
-                    'finder' => 'auth',
+                    // 'finder' => 'auth',
 
                     'parameter' => 'token',
 

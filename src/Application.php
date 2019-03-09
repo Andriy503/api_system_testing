@@ -35,7 +35,7 @@ class Application extends BaseApplication
      */
     public function bootstrap()
     {
-        $this->addPlugin('ADmad/JwtAuth');
+        $this->addPlugin('ADmad/JwtAuth', ['routes' => true, 'bootstrap' => true]);
 
         // Call parent to load bootstrap from files.
         parent::bootstrap();

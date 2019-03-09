@@ -34,11 +34,15 @@ class AdminUsersController extends AppController
                 ])
                 ->first();
 
+            if (empty($adminUsers))
+                return $this->Core->jsonResponse(false, 'Введіть коректно логін або пароль!');
+
             if ($adminUsers->password == $password) {
                 return $this->Core->jsonResponse(true, 'Success', [
                     'token' => JWT::encode(
                         [
                             'sub' => $adminUsers->id,
+                            'exp' =>  time() + 3600,
                             'user' => $adminUsers
                         ],
                         Security::getSalt()
