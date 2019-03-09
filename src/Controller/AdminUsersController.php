@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Firebase\JWT\JWT;
 use Cake\Utility\Security;
 use Cake\ORM\Query;
+use Cake\Auth\DefaultPasswordHasher;
 
 /**
  * AdminUsers Controller
@@ -34,26 +35,25 @@ class AdminUsersController extends AppController
                 ])
                 ->first();
 
-            if (empty($adminUsers))
+            if (empty($adminUsers)) {
                 return $this->Core->jsonResponse(false, 'Введіть коректно логін або пароль!');
-
-            if ($adminUsers->password == $password) {
-                return $this->Core->jsonResponse(true, 'Success', [
-                    'token' => JWT::encode(
-                        [
-                            'sub' => $adminUsers->id,
-                            'exp' =>  time() + 3600,
-                            'user' => $adminUsers
-                        ],
-                        Security::getSalt()
-                    ),
-                    'admin_user' => $adminUsers
-                ]);
             }
 
-            return $this->Core->jsonResponse(false, 'Error');
-        }
+            if (empty($password) || !(new DefaultPasswordHasher())->check($password, $adminUsers->password)) {
+                return $this->Core->jsonResponse(false, 'Введіть коректно логін або пароль!');
+            }
 
-        return $this->Core->jsonResponse(true);
+            return $this->Core->jsonResponse(true, 'Success', [
+                'token' => JWT::encode(
+                    [
+                        'sub' => $adminUsers->id,
+                        'exp' =>  time() + 3600,
+                        'user' => $adminUsers
+                    ],
+                    Security::getSalt()
+                ),
+                'admin_user' => $adminUsers
+            ]);
+        }
     }
 }

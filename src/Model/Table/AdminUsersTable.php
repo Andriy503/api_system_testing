@@ -60,7 +60,7 @@ class AdminUsersTable extends Table
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 50)
+            ->maxLength('password', 255)
             ->requirePresence('password', 'create')
             ->allowEmptyString('password', false);
 

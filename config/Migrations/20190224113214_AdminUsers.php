@@ -20,7 +20,7 @@ class AdminUsers extends AbstractMigration
                     'limit' => 50
                 ])
                 ->addColumn('password', 'string', [
-                    'limit' => 50
+                    'limit' => 255
                 ])
                 ->addTimestamps('created', 'modified')
                 ->create();
