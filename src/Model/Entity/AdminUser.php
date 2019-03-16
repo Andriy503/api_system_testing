@@ -8,8 +8,14 @@ use Cake\Auth\DefaultPasswordHasher;
  * AdminUser Entity
  *
  * @property int $id
+ * @property bool $is_delete
+ * @property bool $is_ver
  * @property string $login
  * @property string $password
+ * @property string $name
+ * @property string $last_name
+ * @property string|null $avatar_path
+ * @property string|null $about
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime|null $modified
  */
@@ -26,8 +32,14 @@ class AdminUser extends Entity
      * @var array
      */
     protected $_accessible = [
+        'is_delete' => true,
+        'is_ver' => true,
         'login' => true,
         'password' => true,
+        'name' => true,
+        'last_name' => true,
+        'avatar_path' => true,
+        'about' => true,
         'created' => true,
         'modified' => true
     ];

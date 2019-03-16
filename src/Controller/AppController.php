@@ -81,4 +81,13 @@ class AppController extends Controller
          */
         // $this->loadComponent('Security');
     }
+
+    protected function _parseEntityErrors($data)
+    {
+        foreach ($data as $error => $res) {
+            foreach ($res as $k => $r) {
+                return $r;
+            }
+        }
+    }
 }

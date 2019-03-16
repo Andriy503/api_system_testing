@@ -21,7 +21,7 @@ class AdminUsersController extends AppController
 
         $this->loadModel('AdminUsers');
 
-        $this->Auth->allow(['login']);
+        $this->Auth->allow(['login', 'registration']);
     }
 
     public function login () {
@@ -55,5 +55,37 @@ class AdminUsersController extends AppController
                 'admin_user' => $adminUsers
             ]);
         }
+    }
+
+    public function registration () {
+        $requestData = $this->request->getData();
+
+        if ($this->AdminUsers->exists(['login' => $requestData['login']])) {
+            return $this->Core->jsonResponse(false, 'Такий логін вже використовується!');
+        }
+
+        if ($requestData['password'] !== $requestData['retryPassword']) {
+            return $this->Core->jsonResponse(false, 'Паролі не співпадають!');
+        }
+
+        $newAdminUser = $this->AdminUsers->newEntity($requestData);
+
+        if ($this->AdminUsers->save($newAdminUser)) {
+            $newUser = $this->AdminUsers->get($newAdminUser->id);
+
+            return $this->Core->jsonResponse(true, 'Ви успішно зареєструвались!', [
+                'token' => JWT::encode(
+                    [
+                        'sub' => $newUser->id,
+                        'exp' =>  time() + 3600,
+                        'user' => $newUser
+                    ],
+                    Security::getSalt()
+                ),
+                'admin_user' => $newUser
+            ]);
+        }
+
+        return $this->Core->jsonResponse(false, $this->_parseEntityErrors($newAdminUser->getErrors()));
     }
 }

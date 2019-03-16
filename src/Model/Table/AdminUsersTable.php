@@ -53,16 +53,49 @@ class AdminUsersTable extends Table
             ->allowEmptyString('id', 'create');
 
         $validator
+            ->boolean('is_delete')
+            ->allowEmptyString('is_delete', false);
+
+        $validator
+            ->boolean('is_ver')
+            ->allowEmptyString('is_ver', false);
+
+        $validator
             ->scalar('login')
-            ->maxLength('login', 50)
+            ->maxLength('login', 50, 'Логін занадто довгий!')
+            ->minLength('login', 5, 'Логін занадто короткий!')
             ->requirePresence('login', 'create')
-            ->notEmpty('login', 'Login can not be empty!');
+            ->notEmpty('login', 'Логін не може бути пустим!');
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 255)
+            ->maxLength('password', 255, 'Пароль занадто довгий!')
+            ->minLength('password', 5, 'Пароль занадто короткий!')
             ->requirePresence('password', 'create')
-            ->allowEmptyString('password', false);
+            ->notEmpty('password', 'Пароль не може бути пустим!');
+
+        $validator
+            ->scalar('name')
+            ->maxLength('name', 50, 'Ім`я занадто довге!')
+            ->minLength('name', 2, 'Ім`я занадто коротке!')
+            ->requirePresence('name', 'create')
+            ->notEmpty('name', 'Ім`я не може бути пустим!');
+
+        $validator
+            ->scalar('last_name')
+            ->maxLength('last_name', 50, 'Прізвище занадто довге!')
+            ->minLength('last_name', 2, 'Прізвище занадто коротке!')
+            ->requirePresence('last_name', 'create')
+            ->notEmpty('last_name', 'Прізвище не може бути пустим!');
+
+        $validator
+            ->scalar('avatar_path')
+            ->maxLength('avatar_path', 255)
+            ->allowEmptyString('avatar_path');
+
+        $validator
+            ->scalar('about')
+            ->allowEmptyString('about');
 
         return $validator;
     }
