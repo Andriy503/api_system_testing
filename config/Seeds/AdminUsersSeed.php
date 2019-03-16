@@ -21,6 +21,7 @@ class AdminUsersSeed extends AbstractSeed
         $data = [
             'id' => 1,
             'is_delete' => false,
+            'is_ver' => true,
             'login' => 'devExample2019@gmail.com',
             'password' => (new \Cake\Auth\DefaultPasswordHasher())->hash('aUB.{RyjH>G9jv'),
             'name' => 'Andriy',

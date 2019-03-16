@@ -56,7 +56,7 @@ class AdminUsersTable extends Table
             ->scalar('login')
             ->maxLength('login', 50)
             ->requirePresence('login', 'create')
-            ->allowEmptyString('login', false);
+            ->notEmpty('login', 'Login can not be empty!');
 
         $validator
             ->scalar('password')

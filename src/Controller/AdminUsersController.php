@@ -43,7 +43,7 @@ class AdminUsersController extends AppController
                 return $this->Core->jsonResponse(false, 'Введіть коректно логін або пароль!');
             }
 
-            return $this->Core->jsonResponse(true, 'Success', [
+            return $this->Core->jsonResponse(true, 'Успішний вхід', [
                 'token' => JWT::encode(
                     [
                         'sub' => $adminUsers->id,
