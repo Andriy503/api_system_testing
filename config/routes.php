@@ -71,9 +71,11 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
     // start my routes
         // $routes->resources('AdminUsers');
         $routes->connect('/show', ['controller' => 'Test', 'action' => 'show']);
-        $routes->connect('/test', ['controller' => 'Test', 'action' => 'test']);
+        $routes->connect('/test', ['controller' => 'AdminUsers', 'action' => 'test']);
         $routes->connect('/login', ['controller' => 'AdminUsers', 'action' => 'login']);
         $routes->connect('/registration', ['controller' => 'AdminUsers', 'action' => 'registration']);
+        $routes->connect('/get_me', ['controller' => 'AdminUsers', 'action' => 'getMe']);
+        $routes->connect('/logout', ['controller' => 'AdminUsers', 'action' => 'logout']);
 
     // end my routes
 

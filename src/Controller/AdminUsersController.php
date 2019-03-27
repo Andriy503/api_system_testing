@@ -52,7 +52,7 @@ class AdminUsersController extends AppController
                     ],
                     Security::getSalt()
                 ),
-                'admin_user' => $adminUsers
+                'user' => $adminUsers
             ]);
         }
     }
@@ -82,10 +82,29 @@ class AdminUsersController extends AppController
                     ],
                     Security::getSalt()
                 ),
-                'admin_user' => $newUser
+                'user' => $newUser
             ]);
         }
 
         return $this->Core->jsonResponse(false, $this->_parseEntityErrors($newAdminUser->getErrors()));
     }
+
+    public function getMe() {
+        // var_dump($this->Auth->user());
+        return $this->Core->jsonResponse(true, null, [
+            'user' => $this->Auth->user()
+        ]);
+    }
+
+    public function logout() {
+        $this->Auth->logout();
+
+        return $this->Core->jsonResponse(true, null);
+    }
+
+    // public function test() {
+    //     return $this->Core->jsonResponse(true, 'Success2', [
+    //         'user' => $this->Auth->user()
+    //     ]);
+    // }
 }
