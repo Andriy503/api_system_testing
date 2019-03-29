@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class AdminRoles extends AbstractMigration
+class AddRoleIdTableAdminUsers extends AbstractMigration
 {
     /**
      * Change Method.
@@ -12,15 +12,15 @@ class AdminRoles extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('admin_roles');
+        $table = $this->table('admin_users');
 
-        if (!$table->exists()) {
+        if ($table->exists()) {
             $table
-                ->addColumn('title', 'string', [
-                    'limit' => 100
+                ->addColumn('role_id', 'integer', [
+                    'after' => 'about'
                 ])
-                ->addTimestamps('created', 'modified')
-                ->create();
+                ->addForeignKey('role_id', 'admin_roles')
+                ->update();
         }
     }
 }

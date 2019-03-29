@@ -28,6 +28,7 @@ class AdminUsersSeed extends AbstractSeed
             'last_name' => 'Sokolovskiy',
             'avatar_path' => null,
             'about' => null,
+            'role_id' => 1,
             'created' => date('Y-m-d H:i:s'),
             'modified' => date('Y-m-d H:i:s')
         ];

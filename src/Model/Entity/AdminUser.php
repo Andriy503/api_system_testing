@@ -40,6 +40,7 @@ class AdminUser extends Entity
         'last_name' => true,
         'avatar_path' => true,
         'about' => true,
+        'role_id' => true,
         'created' => true,
         'modified' => true
     ];

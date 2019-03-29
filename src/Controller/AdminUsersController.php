@@ -68,7 +68,11 @@ class AdminUsersController extends AppController
             return $this->Core->jsonResponse(false, 'Паролі не співпадають!');
         }
 
+        $requestData['role_id'] = 1;
+
         $newAdminUser = $this->AdminUsers->newEntity($requestData);
+
+        // var_dump($newAdminUser);
 
         if ($this->AdminUsers->save($newAdminUser)) {
             $newUser = $this->AdminUsers->get($newAdminUser->id);
