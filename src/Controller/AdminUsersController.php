@@ -76,7 +76,7 @@ class AdminUsersController extends AppController
             return $this->Core->jsonResponse(false, 'Паролі не співпадають!');
         }
 
-        $requestData['role_id'] = 1;
+        $requestData['role_id'] = 2;
 
         $newAdminUser = $this->AdminUsers->newEntity($requestData);
 
@@ -114,9 +114,13 @@ class AdminUsersController extends AppController
         return $this->Core->jsonResponse(true, null);
     }
 
-    // public function test() {
-    //     return $this->Core->jsonResponse(true, 'Success2', [
-    //         'user' => $this->Auth->user()
-    //     ]);
-    // }
+    public function getAdminUsers() {
+        $adminUsers = $this->AdminUsers->find()
+            ->contain('AdminRoles')
+            ->all();
+
+        return $this->Core->jsonResponse(true, null, [
+            'adminUsers' => $adminUsers
+        ]);
+    }
 }

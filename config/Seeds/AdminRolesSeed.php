@@ -36,6 +36,7 @@ class AdminRolesSeed extends AbstractSeed
         foreach ($data as $d) {
             try {
                 $table = $this->table('admin_roles');
+
                 $table->insert((array)$d)->save();
             } catch (\Exception $e) {
                 continue;
