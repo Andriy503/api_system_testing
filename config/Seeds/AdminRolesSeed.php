@@ -19,13 +19,27 @@ class AdminRolesSeed extends AbstractSeed
     public function run()
     {
         $data = [
-            'id' => 1,
-            'title' => 'Administrator',
-            'created' => date('Y-m-d H:i:s'),
-            'modified' => date('Y-m-d H:i:s')
+            [
+                'id' => 1,
+                'title' => 'Administrator',
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 2,
+                'title' => 'Teacher',
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s')
+            ]
         ];
 
-        $table = $this->table('admin_roles');
-        $table->insert($data)->save();
+        foreach ($data as $d) {
+            try {
+                $table = $this->table('admin_roles');
+                $table->insert((array)$d)->save();
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
     }
 }

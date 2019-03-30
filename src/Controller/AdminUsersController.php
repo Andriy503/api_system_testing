@@ -43,6 +43,14 @@ class AdminUsersController extends AppController
                 return $this->Core->jsonResponse(false, 'Введіть коректно логін або пароль!');
             }
 
+            if (!$adminUsers->is_ver) {
+                return $this->Core->jsonResponse(false, 'Користувач не підтверджений адміністратором!');
+            }
+
+            if ($adminUsers->is_delete) {
+                return $this->Core->jsonResponse(false, 'Користувач видалений!');
+            }
+
             return $this->Core->jsonResponse(true, 'Успішний вхід', [
                 'token' => JWT::encode(
                     [
@@ -72,22 +80,22 @@ class AdminUsersController extends AppController
 
         $newAdminUser = $this->AdminUsers->newEntity($requestData);
 
-        // var_dump($newAdminUser);
-
         if ($this->AdminUsers->save($newAdminUser)) {
-            $newUser = $this->AdminUsers->get($newAdminUser->id);
+            // $newUser = $this->AdminUsers->get($newAdminUser->id);
 
-            return $this->Core->jsonResponse(true, 'Ви успішно зареєструвались!', [
-                'token' => JWT::encode(
-                    [
-                        'sub' => $newUser->id,
-                        'exp' =>  time() + 3600,
-                        'user' => $newUser
-                    ],
-                    Security::getSalt()
-                ),
-                'user' => $newUser
-            ]);
+            // return $this->Core->jsonResponse(true, 'Ви успішно зареєструвались!', [
+            //     'token' => JWT::encode(
+            //         [
+            //             'sub' => $newUser->id,
+            //             'exp' =>  time() + 3600,
+            //             'user' => $newUser
+            //         ],
+            //         Security::getSalt()
+            //     ),
+            //     'user' => $newUser
+            // ]);
+
+            return $this->Core->jsonResponse(true, 'Ви успішно зареєструвались, чекайте підтвердження адміністратора!');
         }
 
         return $this->Core->jsonResponse(false, $this->_parseEntityErrors($newAdminUser->getErrors()));
