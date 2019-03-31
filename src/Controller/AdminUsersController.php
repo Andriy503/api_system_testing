@@ -20,6 +20,7 @@ class AdminUsersController extends AppController
         parent::initialize();
 
         $this->loadModel('AdminUsers');
+        $this->loadModel('EducationalSubdivisions');
 
         $this->Auth->allow(['login', 'registration']);
     }
@@ -67,6 +68,19 @@ class AdminUsersController extends AppController
 
     public function registration () {
         $requestData = $this->request->getData();
+
+        $requestData['id_departament'] = (!$requestData['idDepartament']) ? null : $requestData['idDepartament'];
+
+        $isEducation = $this->EducationalSubdivisions->find()
+            ->where([
+                'id' => $requestData['idEducation']
+            ]);
+
+        if ($isEducation->isEmpty()) {
+            return $this->Core->jsonResponse(false, 'Виберіть навчаьний підрозділ!');
+        }
+
+        $requestData['id_education'] = $requestData['idEducation'];
 
         if ($this->AdminUsers->exists(['login' => $requestData['login']])) {
             return $this->Core->jsonResponse(false, 'Такий логін вже використовується!');

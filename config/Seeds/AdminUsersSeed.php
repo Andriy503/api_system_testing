@@ -29,6 +29,8 @@ class AdminUsersSeed extends AbstractSeed
             'avatar_path' => null,
             'about' => null,
             'role_id' => 1,
+            'id_education' => 1,
+            'id_departament' => 1,
             'created' => date('Y-m-d H:i:s'),
             'modified' => date('Y-m-d H:i:s')
         ];

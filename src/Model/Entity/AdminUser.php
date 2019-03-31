@@ -42,7 +42,9 @@ class AdminUser extends Entity
         'about' => true,
         'role_id' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+        'id_education' => true,
+        'id_departament' => true
     ];
 
     /**
