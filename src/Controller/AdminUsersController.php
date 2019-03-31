@@ -130,11 +130,29 @@ class AdminUsersController extends AppController
 
     public function getAdminUsers() {
         $adminUsers = $this->AdminUsers->find()
-            ->contain('AdminRoles')
+            ->contain([
+                'AdminRoles',
+                'EducationalSubdivisions',
+                'Departaments'
+            ])
             ->all();
 
         return $this->Core->jsonResponse(true, null, [
             'adminUsers' => $adminUsers
         ]);
+    }
+
+    public function verifiedAdminUser() {
+        $user = $this->AdminUsers->get($this->request->getQuery('userId'));
+
+        $editUser = $this->AdminUsers->patchEntity($user, [
+            'is_ver' => !$user->is_ver
+        ]);
+
+        if ($this->AdminUsers->save($editUser)) {
+            return $this->Core->jsonResponse(true, 'Змінни збережені!');
+        }
+
+        return $this->Core->jsonResponse(false, 'Помилка сервера зверніться до адміністратора!');
     }
 }

@@ -43,6 +43,16 @@ class AdminUsersTable extends Table
             'foreignKey' => 'role_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->belongsTo('EducationalSubdivisions', [
+            'foreignKey' => 'id_education',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('Departaments', [
+            'foreignKey' => 'id_departament',
+            'joinType' => 'LEFT'
+        ]);
     }
 
     /**

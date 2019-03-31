@@ -78,6 +78,7 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/logout', ['controller' => 'AdminUsers', 'action' => 'logout']);
         $routes->connect('/getAdminUsers', ['controller' => 'AdminUsers', 'action' => 'getAdminUsers']);
         $routes->connect('/getEducations', ['controller' => 'Educations', 'action' => 'getEducations']);
+        $routes->connect('/verifiedAdminUser', ['controller' => 'AdminUsers', 'action' => 'verifiedAdminUser']);
 
     // end my routes
 
