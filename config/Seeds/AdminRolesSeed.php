@@ -21,13 +21,13 @@ class AdminRolesSeed extends AbstractSeed
         $data = [
             [
                 'id' => 1,
-                'title' => 'Administrator',
+                'title' => 'Адміністратор',
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 2,
-                'title' => 'Teacher',
+                'title' => 'Вчитель',
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s')
             ]
