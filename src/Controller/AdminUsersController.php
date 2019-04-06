@@ -155,4 +155,18 @@ class AdminUsersController extends AppController
 
         return $this->Core->jsonResponse(false, 'Помилка сервера зверніться до адміністратора!');
     }
+
+    public function deleteUser() {
+        $user = $this->AdminUsers->get($this->request->getQuery('userId'));
+
+        $editUser = $this->AdminUsers->patchEntity($user, [
+            'is_delete' => !$user->is_delete
+        ]);
+
+        if ($this->AdminUsers->save($editUser)) {
+            return $this->Core->jsonResponse(true, 'Користувач видалений!');
+        }
+
+        return $this->Core->jsonResponse(false, 'Помилка сервера зверніться до адміністратора!');
+    }
 }
