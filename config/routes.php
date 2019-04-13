@@ -80,7 +80,14 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/getEducations', ['controller' => 'Educations', 'action' => 'getEducations']);
         $routes->connect('/verifiedAdminUser', ['controller' => 'AdminUsers', 'action' => 'verifiedAdminUser']);
         $routes->connect('/deleteUser', ['controller' => 'AdminUsers', 'action' => 'deleteUser']);
-
+        $routes->connect('/getTickets', ['controller' => 'Tickets', 'action' => 'test']);
+        $routes->connect('/updateEducation', ['controller' => 'Educations', 'action' => 'updateEducation']);
+        $routes->connect('/addEducation', ['controller' => 'Educations', 'action' => 'addEducation']);
+        $routes->connect('/deleteEducation', ['controller' => 'Educations', 'action' => 'deleteEducation']);
+        $routes->connect('/getFixedDepartaments', ['controller' => 'Educations', 'action' => 'getFixedDepartaments']);
+        $routes->connect('/addDepartament', ['controller' => 'Educations', 'action' => 'addDepartament']);
+        $routes->connect('/updateDepartament', ['controller' => 'Educations', 'action' => 'updateDepartament']);
+        $routes->connect('/deleteDepartament', ['controller' => 'Educations', 'action' => 'deleteDepartament']);
     // end my routes
 
     /**
