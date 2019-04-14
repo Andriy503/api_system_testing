@@ -81,6 +81,10 @@ class EducationsController extends AppController
 
         $education = $this->EducationalSubdivisions->get($id);
 
+        $this->Departaments->deleteAll([
+            'id_educations' => $education->id
+        ]);
+
         if ($this->EducationalSubdivisions->delete($education)) {
             return $this->Core->jsonResponse(true, 'Навчальний підрозділ видалено!', [
                 'educations' => $this->EducationalSubdivisions->find()->all()
