@@ -38,6 +38,11 @@ class SpecialtyTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Departaments', [
+            'foreignKey' => 'id_departament',
+            'joinType' => 'LEFT'
+        ]);
     }
 
     /**

@@ -135,6 +135,9 @@ class AdminUsersController extends AppController
                 'EducationalSubdivisions',
                 'Departaments'
             ])
+            ->where([
+                'AdminUsers.is_delete' => false
+            ])
             ->all();
 
         return $this->Core->jsonResponse(true, null, [

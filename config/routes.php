@@ -88,6 +88,10 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/addDepartament', ['controller' => 'Educations', 'action' => 'addDepartament']);
         $routes->connect('/updateDepartament', ['controller' => 'Educations', 'action' => 'updateDepartament']);
         $routes->connect('/deleteDepartament', ['controller' => 'Educations', 'action' => 'deleteDepartament']);
+        $routes->connect('/getSpecialtyForIdDepartament', ['controller' => 'Specialty', 'action' => 'getSpecialtyForIdDepartament']);
+        $routes->connect('/addSpecialty', ['controller' => 'Specialty', 'action' => 'addSpecialty']);
+        $routes->connect('/editSpecialty', ['controller' => 'Specialty', 'action' => 'editSpecialty']);
+        $routes->connect('/deleteSpecialty', ['controller' => 'Specialty', 'action' => 'deleteSpecialty']);
     // end my routes
 
     /**
