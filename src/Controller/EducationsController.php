@@ -16,6 +16,7 @@ class EducationsController extends AppController
 
         $this->loadModel('EducationalSubdivisions');
         $this->loadModel('Departaments');
+        $this->loadModel('Specialty');
 
         $this->Auth->allow(['getEducations']);
     }
@@ -83,10 +84,26 @@ class EducationsController extends AppController
 
         $education = $this->EducationalSubdivisions->get($id);
 
+        $departamentsIds = $this->Departaments->find()
+            ->where([
+                'id_educations' => $education->id
+            ])
+            ->map(function ($row) {
+                return $row->id;
+            })
+            ->toArray();
+
+        //  delete all specialty
+        $this->Specialty->deleteAll([
+            'id_departament IN' => $departamentsIds
+        ]);
+
+        // delete all departamet
         $this->Departaments->deleteAll([
             'id_educations' => $education->id
         ]);
 
+        // delete education
         if ($this->EducationalSubdivisions->delete($education)) {
             return $this->Core->jsonResponse(true, 'Навчальний підрозділ видалено!', [
                 'educations' => $this->EducationalSubdivisions->find()->all()
@@ -174,11 +191,15 @@ class EducationsController extends AppController
 
         $departament = $this->Departaments->get($id);
 
+        //  delete all specialty
+        $this->Specialty->deleteAll([
+            'id_departament' => $departament->id
+        ]);
+
         if ($this->Departaments->delete($departament)) {
             return $this->Core->jsonResponse(true, 'Факультет видалено!');
         }
 
         return $this->Core->jsonResponse(false, 'Помилка сервера!');
     }
-
 }
