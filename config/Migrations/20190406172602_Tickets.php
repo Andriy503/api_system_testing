@@ -25,7 +25,9 @@ class Tickets extends AbstractMigration
                 ->addColumn('count_question', 'integer', [
                     'default' => 20
                 ])
-                ->addColumn('id_specialty', 'integer')
+                ->addColumn('id_specialty', 'integer', [
+                    'null' => true
+                ])
                 ->addColumn('id_course', 'integer', [
                     'default' => 1
                 ])

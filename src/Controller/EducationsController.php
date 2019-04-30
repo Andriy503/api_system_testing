@@ -17,6 +17,7 @@ class EducationsController extends AppController
         $this->loadModel('EducationalSubdivisions');
         $this->loadModel('Departaments');
         $this->loadModel('Specialty');
+        $this->loadModel('Tickets');
 
         $this->Auth->allow(['getEducations']);
     }
@@ -92,6 +93,29 @@ class EducationsController extends AppController
                 return $row->id;
             })
             ->toArray();
+
+        $departamentsIds[] = -1;
+
+        // edit tickets field id_specialty = NULL
+        $editSpecialtyIds = $this->Specialty->find()
+            ->where([
+                'id_departament IN' => $departamentsIds
+            ])
+            ->map(function ($row) {
+                return $row->id;
+            })
+            ->toArray();
+
+        $editSpecialtyIds[] = -1;
+
+        $this->Tickets->updateAll(
+            [
+                'id_specialty' => NULL
+            ],
+            [
+                'id_specialty IN' => $editSpecialtyIds
+            ]
+        );
 
         //  delete all specialty
         $this->Specialty->deleteAll([
@@ -190,6 +214,27 @@ class EducationsController extends AppController
         }
 
         $departament = $this->Departaments->get($id);
+
+        // edit tickets field id_specialty = NULL
+        $editSpecialtyIds = $this->Specialty->find()
+            ->where([
+                'id_departament' => $departament->id
+            ])
+            ->map(function ($row) {
+                return $row->id;
+            })
+            ->toArray();
+
+        $editSpecialtyIds[] = -1;
+
+        $this->Tickets->updateAll(
+            [
+                'id_specialty' => NULL
+            ],
+            [
+                'id_specialty IN' => $editSpecialtyIds
+            ]
+        );
 
         //  delete all specialty
         $this->Specialty->deleteAll([

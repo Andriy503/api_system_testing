@@ -15,6 +15,7 @@ class SpecialtyController extends AppController
         parent::initialize();
 
         $this->loadModel('Specialty');
+        $this->loadModel('Tickets');
     }
 
     public function getSpecialtyForIdDepartament() {
@@ -83,6 +84,15 @@ class SpecialtyController extends AppController
         }
 
         $specialty = $this->Specialty->get($id);
+
+        $this->Tickets->updateAll(
+            [
+                'id_specialty' => NULL
+            ],
+            [
+                'id_specialty' => $specialty->id
+            ]
+        );
 
         if ($this->Specialty->delete($specialty)) {
             return $this->Core->jsonResponse(true, 'Спеціальність видалено!');
