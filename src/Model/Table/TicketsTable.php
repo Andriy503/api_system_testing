@@ -66,6 +66,7 @@ class TicketsTable extends Table
             ->scalar('title')
             ->maxLength('title', 255)
             ->requirePresence('title', 'create')
+            ->notEmpty('title', 'Заголовок не може бути пустим!')
             ->allowEmptyString('title', false);
 
         $validator
@@ -85,7 +86,6 @@ class TicketsTable extends Table
 
         $validator
             ->integer('id_course')
-            ->requirePresence('id_course', 'create')
             ->allowEmptyString('id_course', false);
 
         return $validator;

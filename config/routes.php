@@ -91,11 +91,10 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/addSpecialty', ['controller' => 'Specialty', 'action' => 'addSpecialty']);
         $routes->connect('/editSpecialty', ['controller' => 'Specialty', 'action' => 'editSpecialty']);
         $routes->connect('/deleteSpecialty', ['controller' => 'Specialty', 'action' => 'deleteSpecialty']);
+        // tickets
+        $routes->connect('/getTickets', ['controller' => 'Tickets', 'action' => 'index']);
+        $routes->connect('/addTicket', ['controller' => 'Tickets', 'action' => 'addTicket']);
     // end my routes
-
-    // resourse routers
-        $routes->resources('Tickets');
-    // end resourse routes
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
