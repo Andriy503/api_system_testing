@@ -26,10 +26,12 @@ class EducationsController extends AppController
     public function getEducations() {
         $educations = $this->EducationalSubdivisions->find()->all();
         $departaments = $this->Departaments->find()->all();
+        $specialty = $this->Specialty->find()->all();
 
         return $this->Core->jsonResponse(true, null, [
             'educations' => $educations,
-            'departaments' => $departaments
+            'departaments' => $departaments,
+            'specialty' => $specialty
         ]);
     }
 

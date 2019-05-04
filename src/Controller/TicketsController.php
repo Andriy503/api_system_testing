@@ -18,13 +18,12 @@ class TicketsController extends AppController
         $this->loadModel('Tickets');
     }
 
-    public function test() {
+    public function index() {
         $tickets = $this->Tickets->find()
             ->contain([
                 'Specialty',
                 'Courses'
-            ])
-            ->all();
+            ]);
 
         return $this->Core->jsonResponse(true, null, [
             'tickets' => $tickets

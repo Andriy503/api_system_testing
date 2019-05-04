@@ -34,6 +34,7 @@ class Specialty extends Entity
         'full_name' => true,
         'id_departament' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+        'pre_path' => true
     ];
 }
