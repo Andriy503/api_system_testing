@@ -72,10 +72,12 @@ class TicketsTable extends Table
         $validator
             ->integer('time_of_passing')
             ->requirePresence('time_of_passing', 'create')
+            ->notEmpty('time_of_passing', 'Час проходження не може бути пустим!')
             ->allowEmptyString('time_of_passing', false);
 
         $validator
             ->integer('count_question')
+            ->notEmpty('count_question', 'Кількість питань не може бути пустим!')
             ->requirePresence('count_question', 'create')
             ->allowEmptyString('count_question', false);
 

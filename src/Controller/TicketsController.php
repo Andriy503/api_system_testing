@@ -90,4 +90,37 @@ class TicketsController extends AppController
             }
         }
     }
+
+    public function updateTicket() {
+        if ($this->request->is('POST')) {
+            $id = $this->request->getData('id');
+
+            if (!is_numeric($id)) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            try {
+                $ticket = $this->Tickets->get($id);
+            } catch (\Exception $e) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            $editTicket = $this->Tickets->patchEntity($ticket, $this->request->getData());
+
+            if (!$this->Tickets->save($editTicket)) {
+                return $this->Core->jsonResponse(false, $this->_parseEntityErrors($editTicket->getErrors()));
+            }
+
+            $getTicket = $this->Tickets->get($editTicket->id, [
+                'contain' => [
+                    'Specialty',
+                    'Courses'
+                ]
+            ]);
+
+            return $this->Core->jsonResponse(true, 'Білет оновлено', [
+                'ticket' => $getTicket
+            ]);
+        }
+    }
 }
