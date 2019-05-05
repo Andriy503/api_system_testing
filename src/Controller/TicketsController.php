@@ -55,7 +55,7 @@ class TicketsController extends AppController
             $ticket = $this->Tickets->newEntity($params);
 
             if (!$this->Tickets->save($ticket)) {
-                return $this->Core->jsonResponse(false, $ticket->getErrors());
+                return $this->Core->jsonResponse(false, $this->_parseEntityErrors($ticket->getErrors()));
             }
 
             $newTicket = $this->Tickets->get($ticket->id, [
@@ -68,6 +68,26 @@ class TicketsController extends AppController
             return $this->Core->jsonResponse(true, 'Запит доданий!', [
                 'ticket' => $newTicket
             ]);
+        }
+    }
+
+    public function deleteTicket() {
+        if ($this->request->is('POST')) {
+            $id = $this->request->getData('id', false);
+
+            if (!is_numeric($id)) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            try {
+                $ticket = $this->Tickets->get($id);
+            } catch (\Exception $e) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            if ($this->Tickets->delete($ticket)) {
+                return $this->Core->jsonResponse(true, 'Білет видалено!');
+            }
         }
     }
 }
