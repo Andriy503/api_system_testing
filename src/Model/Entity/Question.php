@@ -34,6 +34,7 @@ class Question extends Entity
         'id_ticket' => true,
         'id_type' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+        'points' => true
     ];
 }

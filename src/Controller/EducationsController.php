@@ -200,7 +200,7 @@ class EducationsController extends AppController
         ]);
 
         if ($this->Departaments->save($editEepartament)) {
-            return $this->Core->jsonResponse(true, 'Факультет оновлено!', [
+            return $this->Core->jsonResponse(true, 'Кафедру оновлено!', [
                 'departament' => $departament
             ]);
         }
@@ -244,7 +244,7 @@ class EducationsController extends AppController
         ]);
 
         if ($this->Departaments->delete($departament)) {
-            return $this->Core->jsonResponse(true, 'Факультет видалено!');
+            return $this->Core->jsonResponse(true, 'Кафедру видалено!');
         }
 
         return $this->Core->jsonResponse(false, 'Помилка сервера!');

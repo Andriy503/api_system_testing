@@ -96,6 +96,10 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/addTicket', ['controller' => 'Tickets', 'action' => 'addTicket']);
         $routes->connect('/deleteTicket', ['controller' => 'Tickets', 'action' => 'deleteTicket']);
         $routes->connect('/updateTicket', ['controller' => 'Tickets', 'action' => 'updateTicket']);
+
+        // questions
+        $routes->connect('/getQuestions', ['controller' => 'Questions', 'action' => 'getQuestions']);
+        $routes->connect('/saveQuestion', ['controller' => 'Questions', 'action' => 'saveQuestion']);
     // end my routes
 
     /**
