@@ -67,6 +67,11 @@ class QuestionsTable extends Table
             ->allowEmptyString('rating', false);
 
         $validator
+            ->integer('points')
+            ->requirePresence('points', 'create')
+            ->allowEmptyString('points', false);
+
+        $validator
             ->integer('id_ticket')
             ->requirePresence('id_ticket', 'create')
             ->allowEmptyString('id_ticket', false);
