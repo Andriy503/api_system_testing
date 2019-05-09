@@ -100,6 +100,8 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         // questions
         $routes->connect('/getQuestions', ['controller' => 'Questions', 'action' => 'getQuestions']);
         $routes->connect('/saveQuestion', ['controller' => 'Questions', 'action' => 'saveQuestion']);
+        $routes->connect('/deleteQuestion', ['controller' => 'Questions', 'action' => 'deleteQuestion']);
+        $routes->connect('/editQuestion', ['controller' => 'Questions', 'action' => 'editQuestion']);
     // end my routes
 
     /**
