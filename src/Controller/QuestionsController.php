@@ -57,7 +57,7 @@ class QuestionsController extends AppController
 
             $params = $this->request->getData();
             $params['pre_img'] = $fullPathImg;
-            $params['id_ticket'] = 1;
+            // $params['id_ticket'] = 1;
 
             $question = $this->Questions->newEntity($params);
 

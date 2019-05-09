@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Tickets Controller
@@ -16,6 +17,7 @@ class TicketsController extends AppController
         parent::initialize();
 
         $this->loadModel('Tickets');
+        $this->loadModel('Questions');
     }
 
     public function index() {
@@ -27,11 +29,30 @@ class TicketsController extends AppController
                 'Courses'
             ]);
 
+        $connection = ConnectionManager::get('default');
+        $pairs = $connection->execute(
+            "SELECT tickets.id, COUNT(questions.id) as questions_count FROM `tickets`
+            LEFT JOIN `questions` ON (questions.id_ticket = tickets.id)
+            GROUP BY tickets.id
+            "
+        )
+        ->fetchAll('assoc');
+
         if ($specialtyId && $specialtyId !== 'false') {
             $tickets
                 ->where([
                     'Tickets.id_specialty' => $specialtyId
                 ]);
+        }
+
+        $tickets = $tickets->toArray();
+
+        foreach ($tickets as &$ticket) {
+            foreach ($pairs as $pair) {
+                if ($pair['id'] == $ticket['id']) {
+                    $ticket['count_questions_marge'] = $pair['questions_count'];
+                }
+            }
         }
 
         return $this->Core->jsonResponse(true, null, [
