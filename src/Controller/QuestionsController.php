@@ -57,7 +57,7 @@ class QuestionsController extends AppController
 
             $params = $this->request->getData();
             $params['pre_img'] = $fullPathImg;
-            // $params['id_ticket'] = 1;
+            $params['search_hash'] = uniqid('q', true); // generate unique hash
 
             $question = $this->Questions->newEntity($params);
 

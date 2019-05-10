@@ -91,6 +91,7 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/addSpecialty', ['controller' => 'Specialty', 'action' => 'addSpecialty']);
         $routes->connect('/editSpecialty', ['controller' => 'Specialty', 'action' => 'editSpecialty']);
         $routes->connect('/deleteSpecialty', ['controller' => 'Specialty', 'action' => 'deleteSpecialty']);
+
         // tickets
         $routes->connect('/getTickets', ['controller' => 'Tickets', 'action' => 'index']);
         $routes->connect('/addTicket', ['controller' => 'Tickets', 'action' => 'addTicket']);
@@ -102,6 +103,13 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/saveQuestion', ['controller' => 'Questions', 'action' => 'saveQuestion']);
         $routes->connect('/deleteQuestion', ['controller' => 'Questions', 'action' => 'deleteQuestion']);
         $routes->connect('/editQuestion', ['controller' => 'Questions', 'action' => 'editQuestion']);
+
+        // answers
+        $routes->connect('/searchHash', ['controller' => 'Answers', 'action' => 'searchHash']);
+        $routes->connect('/addAnswer', ['controller' => 'Answers', 'action' => 'addAnswer']);
+        $routes->connect('/deleteAnswer', ['controller' => 'Answers', 'action' => 'deleteAnswer']);
+        $routes->connect('/updateAnswer', ['controller' => 'Answers', 'action' => 'updateAnswer']);
+
     // end my routes
 
     /**

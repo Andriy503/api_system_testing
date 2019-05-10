@@ -38,6 +38,16 @@ class QuestionsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Tickets', [
+            'foreignKey' => 'id_ticket',
+            'joinType' => 'INNER'
+        ]);
+
+        $this->belongsTo('TypesQuestions', [
+            'foreignKey' => 'id_type',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
