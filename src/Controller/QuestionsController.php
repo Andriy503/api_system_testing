@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Filesystem\Folder;
 use claviska\SimpleImage;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Questions Controller
@@ -44,7 +45,25 @@ class QuestionsController extends AppController
     public function saveQuestion() {
         if ($this->request->is('POST')) {
             $imageFile = $this->request->getData('image', false);
+            $idTicket = $this->request->getData('id_ticket', false);
             $fullPathImg = null;
+
+            // Перевірка на поточну кількість питань
+            $connection = ConnectionManager::get('default');
+            $countQuestionsInTicket = $connection->execute(
+                "SELECT tickets.*, COUNT(questions.id) as questions_count FROM `tickets`
+                LEFT JOIN `questions` ON (questions.id_ticket = tickets.id)
+                WHERE questions.id_ticket = $idTicket
+                GROUP BY tickets.id
+                "
+            )
+            ->fetchAll('assoc');
+
+            if (!empty($countQuestionsInTicket)) {
+                if ((int)$countQuestionsInTicket[0]['questions_count'] >= (int)$countQuestionsInTicket[0]['count_question']) {
+                    return $this->Core->jsonResponse(false, 'Білет не може містити більше ніж ' . $countQuestionsInTicket[0]['count_question'] . ' питання!');
+                }
+            }
 
             if ($imageFile !== false && is_array($imageFile) && !empty($imageFile)) {
                 $resSaved = $this->_processSavedImage($imageFile);
@@ -66,7 +85,11 @@ class QuestionsController extends AppController
                 return $this->Core->jsonResponse(false, $this->_parseEntityErrors($question->getErrors()));
             }
 
-            $newQuestion = $this->Questions->get($question->id);
+            $newQuestion = $this->Questions->get($question->id, [
+                'contain' => [
+                    'TypesQuestions'
+                ]
+            ]);
 
             return $this->Core->jsonResponse(true, 'Питання додано!', [
                 'question' => $newQuestion
@@ -130,7 +153,11 @@ class QuestionsController extends AppController
                 return $this->Core->jsonResponse(false, $this->_parseEntityErrors($editQuestion->getErrors()));
             }
 
-            $getQuestion = $this->Questions->get($editQuestion->id);
+            $getQuestion = $this->Questions->get($editQuestion->id, [
+                'contain' => [
+                    'TypesQuestions'
+                ]
+            ]);
 
             return $this->Core->jsonResponse(true, 'Питання оновлено', [
                 'question' => $getQuestion
