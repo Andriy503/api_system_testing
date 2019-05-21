@@ -112,6 +112,12 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/addBundles', ['controller' => 'Answers', 'action' => 'addBundles']);
         $routes->connect('/updateBundle', ['controller' => 'Answers', 'action' => 'updateBundle']);
 
+        // entrants
+        $routes->connect('/getEntrants', ['controller' => 'Entrants', 'action' => 'getEntrants']);
+        $routes->connect('/addEntrant', ['controller' => 'Entrants', 'action' => 'addEntrant']);
+        $routes->connect('/updateEntrant', ['controller' => 'Entrants', 'action' => 'updateEntrant']);
+        $routes->connect('/deleteEntrant', ['controller' => 'Entrants', 'action' => 'deleteEntrant']);
+
     // end my routes
 
     /**
