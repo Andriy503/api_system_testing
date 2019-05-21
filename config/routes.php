@@ -109,6 +109,8 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/addAnswer', ['controller' => 'Answers', 'action' => 'addAnswer']);
         $routes->connect('/deleteAnswer', ['controller' => 'Answers', 'action' => 'deleteAnswer']);
         $routes->connect('/updateAnswer', ['controller' => 'Answers', 'action' => 'updateAnswer']);
+        $routes->connect('/addBundles', ['controller' => 'Answers', 'action' => 'addBundles']);
+        $routes->connect('/updateBundle', ['controller' => 'Answers', 'action' => 'updateBundle']);
 
     // end my routes
 

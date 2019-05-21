@@ -37,6 +37,11 @@ class AnswersTable extends Table
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
 
+        $this->hasMany('Bundles', [
+            'foreignKey' => 'id_answer',
+            'joinType' => 'LEFT'
+        ]);
+
         $this->addBehavior('Timestamp');
     }
 
@@ -55,11 +60,10 @@ class AnswersTable extends Table
         $validator
             ->scalar('title')
             ->requirePresence('title', 'create')
-            ->allowEmptyString('title', false);
+            ->allowEmptyString('title', true);
 
         $validator
             ->boolean('current_answer')
-            ->requirePresence('current_answer', 'create')
             ->allowEmptyString('current_answer', false);
 
         $validator

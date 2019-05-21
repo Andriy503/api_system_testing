@@ -17,6 +17,7 @@ class AnswersController extends AppController
 
         $this->loadModel('Answers');
         $this->loadModel('Questions');
+        $this->loadModel('Bundles');
     }
 
     public function searchHash() {
@@ -35,6 +36,7 @@ class AnswersController extends AppController
 
         if (!empty($question)) {
             $answers = $this->Answers->find()
+                ->contain('Bundles')
                 ->where([
                     'id_question' => $question->id
                 ])
@@ -126,7 +128,6 @@ class AnswersController extends AppController
         $associations = [
             1 => '_oneAnswer',
             2 => '_manyAnswers',
-            3 => '',
             4 => '_wordAnswer'
         ];
 
@@ -216,5 +217,65 @@ class AnswersController extends AppController
         return [
             'success' => true
         ];
+    }
+
+    public function addBundles() {
+        if ($this->request->is('POST')) {
+            $data = $this->request->getData('data', false);
+            $id_question = $this->request->getData('id_question', false);
+
+            $answer = $this->Answers->newEntity([
+                'id_question' => $id_question,
+                'title' => ''
+            ]);
+
+            if (!is_numeric($id_question) || !$data || !is_array($data)) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            if (!$this->Answers->save($answer)) {
+                return $this->Core->jsonResponse(false, $this->_parseEntityErrors($answer->getErrors()));
+            }
+
+            foreach ($data as $item) {
+                $newBundle = $this->Bundles->newEntity(
+                    array_merge($item, [
+                        'id_answer' => $answer->id
+                    ])
+                );
+
+                if (!$this->Bundles->save($newBundle)) {
+                    return $this->Core->jsonResponse(false, $this->_parseEntityErrors($newBundle->getErrors()));
+                }
+            }
+
+            return $this->Core->jsonResponse(true, 'Асоціації додані!');
+        }
+    }
+
+    public function updateBundle() {
+        if ($this->request->is('POST')) {
+            $data = $this->request->getData('data', false);
+
+            if (!is_array($data)) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            foreach ($data as $item) {
+                try {
+                    $bundle = $this->Bundles->get($item['id']);
+                } catch (\Exception $e) {
+                    return $this->Core->jsonResponse(false, 'Connection Error');
+                }
+
+                $updateBundle = $this->Bundles->patchEntity($bundle, $item);
+
+                if (!$this->Bundles->save($updateBundle)) {
+                    return $this->Core->jsonResponse(false, $this->_parseEntityErrors($updateBundle->getErrors()));
+                }
+            }
+
+            return $this->Core->jsonResponse(true, 'Асоціації оновлено');
+        }
     }
 }

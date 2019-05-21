@@ -30,6 +30,7 @@ class QuestionsController extends AppController
             }
 
             $questions = $this->Questions->find()
+                ->contain('TypesQuestions')
                 ->where([
                     'id_ticket' => $ticketId
                 ]);
