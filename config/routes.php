@@ -118,6 +118,9 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/updateEntrant', ['controller' => 'Entrants', 'action' => 'updateEntrant']);
         $routes->connect('/deleteEntrant', ['controller' => 'Entrants', 'action' => 'deleteEntrant']);
 
+        // testing
+        $routes->connect('/verificationEntrant', ['controller' => 'Testings', 'action' => 'verificationEntrant']);
+
     // end my routes
 
     /**
