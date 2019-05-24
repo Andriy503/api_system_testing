@@ -37,8 +37,6 @@ class TicketsTable extends Table
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
 
-        $this->addBehavior('Timestamp');
-
         $this->belongsTo('Specialty', [
             'foreignKey' => 'id_specialty',
             'joinType' => 'INNER'
@@ -48,6 +46,13 @@ class TicketsTable extends Table
             'foreignKey' => 'id_course',
             'joinType' => 'INNER'
         ]);
+
+        $this->hasMany('Questions', [
+            'foreignKey' => 'id_ticket',
+            'joinType' => 'INNER'
+        ]);
+
+        $this->addBehavior('Timestamp');
     }
 
     /**

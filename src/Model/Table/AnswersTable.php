@@ -42,6 +42,11 @@ class AnswersTable extends Table
             'joinType' => 'LEFT'
         ]);
 
+        $this->belongsTo('Questions', [
+            'foreignKey' => 'id_question',
+            'joinType' => 'INNER'
+        ]);
+
         $this->addBehavior('Timestamp');
     }
 

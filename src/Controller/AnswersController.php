@@ -72,7 +72,9 @@ class AnswersController extends AppController
                 return $this->Core->jsonResponse(false, $this->_parseEntityErrors($answer->getErrors()));
             }
 
-            return $this->Core->jsonResponse(true, 'Відповідь додана', [
+            $this->checkingFullingQuestion($idQuestion);
+
+            return $this->Core->jsonResponse(true, 'Відповідь додано', [
                 'answer' => $answer
             ]);
         }
@@ -93,6 +95,8 @@ class AnswersController extends AppController
             }
 
             if ($this->Answers->delete($answer)) {
+                $this->checkingFullingQuestion($answer->id_question);
+
                 return $this->Core->jsonResponse(true, 'Відповідь видалено!');
             }
         }
@@ -249,6 +253,8 @@ class AnswersController extends AppController
                 }
             }
 
+            $this->checkingFullingQuestion($id_question);
+
             return $this->Core->jsonResponse(true, 'Асоціації додані!');
         }
     }
@@ -277,5 +283,55 @@ class AnswersController extends AppController
 
             return $this->Core->jsonResponse(true, 'Асоціації оновлено');
         }
+    }
+
+    private function checkingFullingQuestion($idQuestion) {
+        try {
+            $question = $this->Questions->get($idQuestion, [
+                'contain' => [
+                    'Answers'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $this->Core->jsonResponse(false, 'Connection Error');
+        }
+
+        $typeId = $question->id_type;
+        $isFullAnswers = false;
+
+        switch ($typeId) {
+            case 1:
+                if (count($question->answers) === 4) {
+                    $isFullAnswers = true;
+                }
+                break;
+
+            case 2:
+                if (count($question->answers) === 4) {
+                    $isFullAnswers = true;
+                }
+                break;
+
+            case 3:
+                if (count($question->answers) === 1) {
+                    $isFullAnswers = true;
+                }
+                break;
+
+            case 4:
+                if (count($question->answers) === 1) {
+                    $isFullAnswers = true;
+                }
+                break;
+        }
+
+        $editQuestionFulling = $this->Questions->patchEntity(
+            $this->Questions->get($idQuestion),
+            [
+                'is_full_answers' => $isFullAnswers
+            ]
+        );
+
+        $this->Questions->save($editQuestionFulling);
     }
 }

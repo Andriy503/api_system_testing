@@ -34,6 +34,7 @@ class Ticket extends Entity
         'id_specialty' => true,
         'id_course' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+        'is_progress' => true
     ];
 }

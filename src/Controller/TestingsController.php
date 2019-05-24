@@ -16,6 +16,7 @@ class TestingsController extends AppController
 
         $this->loadModel('Entrants');
         $this->loadModel('EntrantToTicket');
+        $this->loadModel('Tickets');
 
         $this->Auth->allow(
             [
@@ -45,6 +46,32 @@ class TestingsController extends AppController
             if ($entrant->is_passed) {
                 return $this->Core->jsonResponse(false, 'Даний абірурієнт уже проходив тестування!');
             }
+
+            $entrantToTicket = $this->EntrantToTicket->find()
+                ->contain('Tickets')
+                ->where([
+                    'id_entrant' => $entrant->id
+                ])
+                ->first();
+
+            if (!empty($entrantToTicket)) {
+                if ($entrantToTicket->is_done) {
+                    return $this->Core->jsonResponse('Абітурієнт уже проходив тестування!');
+                }
+            } else {
+                $ticket = $this->Tickets->find()
+                    ->contain('Questions')
+                    ->where([
+                        'Tickets.is_progress' => false,
+                        'Tickets.id_specialty' => $entrant->id_specialty
+                    ])
+                    ->first();
+                // тут потрібно витянути білет тобто питання і відповіді!
+
+                var_dump($ticket);
+            }
+
+            return;
 
             return $this->Core->jsonResponse(true, 'Абітурієнт верифікований!', [
                 'entrant' => $entrant
