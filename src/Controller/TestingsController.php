@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Testings Controller
@@ -29,6 +30,7 @@ class TestingsController extends AppController
     public function verificationEntrant() {
         if ($this->request->is('POST')) {
             $params = (object)$this->request->getData();
+            $resTicket = [];
 
             $entrant = $this->Entrants->find()
                 ->contain('Specialty')
@@ -58,23 +60,42 @@ class TestingsController extends AppController
                 if ($entrantToTicket->is_done) {
                     return $this->Core->jsonResponse('Абітурієнт уже проходив тестування!');
                 }
-            } else {
-                $ticket = $this->Tickets->find()
-                    ->contain('Questions')
-                    ->where([
-                        'Tickets.is_progress' => false,
-                        'Tickets.id_specialty' => $entrant->id_specialty
-                    ])
-                    ->first();
-                // тут потрібно витянути білет тобто питання і відповіді!
 
-                var_dump($ticket);
+                $resTicket = $this->Tickets->get($entrantToTicket->id_ticket);
+            } else {
+                $connection = ConnectionManager::get('default');
+                $sql = "
+                    SELECT tickets.* FROM `tickets`
+                    INNER JOIN `questions` ON (questions.id_ticket = tickets.id AND questions.is_full_answers = true)
+                    WHERE tickets.is_progress = false AND tickets.id_specialty = $entrant->id_specialty
+                    HAVING tickets.count_question = COUNT(questions.id)
+                    ORDER BY tickets.id
+                    LIMIT 1
+                ";
+                $ticket = $connection->execute($sql)
+                    ->fetchAll('assoc');
+
+                if (count($ticket) === 0) {
+                    return $this->Core->jsonResponse(false, 'Білет не знайдено!');
+                }
+
+                $ticketId = (int)$ticket[0]['id'];
+
+                $newRecordBind = $this->EntrantToTicket->newEntity();
+
+                $newRecordBind->id_entrant = $entrant->id;
+                $newRecordBind->id_ticket = $ticketId;
+
+                if (!$this->EntrantToTicket->save($newRecordBind)) {
+                    return $this->Core->jsonResponse(false, 'Connection error!');
+                }
+
+                $resTicket = $ticket[0];
             }
 
-            return;
-
             return $this->Core->jsonResponse(true, 'Абітурієнт верифікований!', [
-                'entrant' => $entrant
+                'entrant' => $entrant,
+                'ticket' => $resTicket
             ]);
         }
     }
@@ -108,7 +129,7 @@ class TestingsController extends AppController
 
             return $this->Core->jsonResponse(true, 'success', [
                 'entrant' => $entrant,
-                'entrantToTicket' => $entrantToTicket
+                'ticket' => $resTicket
             ]);
         }
     }
