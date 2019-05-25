@@ -18,6 +18,8 @@ class TestingsController extends AppController
         $this->loadModel('Entrants');
         $this->loadModel('EntrantToTicket');
         $this->loadModel('Tickets');
+        $this->loadModel('Questions');
+        $this->loadModel('Answers');
 
         $this->Auth->allow(
             [
@@ -125,11 +127,59 @@ class TestingsController extends AppController
                 return $this->Core->jsonResponse(false, 'Білет не прив\'язаний до абітурієнта!');
             }
 
-            // the need pull all questions and answers
+            $idTicket = $entrantToTicket->first()->id_ticket;
+
+            $questions = $this->Questions->find()
+                ->contain([
+                    'Answers',
+                    'Answers.Bundles'
+                ])
+                ->where([
+                    'Questions.id_ticket' => $idTicket
+                ])
+                ->orderAsc('Questions.id_type')
+                ->toArray();
+
+            foreach ($questions as &$question) {
+                if ($question->id_type === 3) {
+                    $a_questions = [];
+                    $a_answers = [];
+
+                    foreach ($question->answers[0]->bundles as $bundle) {
+                        array_push($a_questions, [
+                            'id' => $bundle->id,
+                            'title' => $bundle->a_question
+                        ]);
+                        array_push($a_answers, [
+                            'id' => $bundle->id,
+                            'title' => $bundle->a_answer
+                        ]);
+                    }
+
+                    shuffle($a_questions);
+                    shuffle($a_answers);
+
+                    $question['move_bundles'] = [];
+
+                    $question['move_bundles']['questions'] = $a_questions;
+                    $question['move_bundles']['answers'] = $a_answers;
+
+                    // delete bundles
+                    unset($question->answers[0]->bundles);
+                }
+            }
+
+            $ticket = $this->Tickets->get($idTicket);
+
+            $editT = $this->Tickets->patchEntity($ticket, [
+                'is_progress' => true
+            ]);
+
+            $this->Tickets->save($editT);
 
             return $this->Core->jsonResponse(true, 'success', [
-                'entrant' => $entrant,
-                'ticket' => $resTicket
+                'questions' => $questions,
+                'ticket' => $ticket
             ]);
         }
     }
