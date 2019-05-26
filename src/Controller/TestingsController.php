@@ -20,11 +20,13 @@ class TestingsController extends AppController
         $this->loadModel('Tickets');
         $this->loadModel('Questions');
         $this->loadModel('Answers');
+        $this->loadModel('EntrantAnswers');
 
         $this->Auth->allow(
             [
                 'verificationEntrant',
-                'getDataAndCheckRootUser'
+                'getDataAndCheckRootUser',
+                'addAnswerEntant'
             ]
         );
     }
@@ -177,10 +179,72 @@ class TestingsController extends AppController
 
             $this->Tickets->save($editT);
 
+            $entrant_answers = $this->EntrantAnswers->find()
+                ->where([
+                    'id_entrant' => $idEntrant
+                ])
+                ->toArray();
+
             return $this->Core->jsonResponse(true, 'success', [
                 'questions' => $questions,
-                'ticket' => $ticket
+                'ticket' => $ticket,
+                'entrant_answers' => $entrant_answers
             ]);
+        }
+    }
+
+    public function addAnswerEntant() {
+        if ($this->request->is('POST')) {
+            $idQuestion = $this->request->getData('id_question', false);
+            $idEntrant = $this->request->getData('id_entrant', false);
+
+            $idsAnswers = $this->request->getData('answers', false);
+            $params = [];
+
+            if (!$idsAnswers) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            try {
+                $question = $this->Questions->get($idQuestion);
+            } catch (\Exception $e) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            $params['id_question'] = $idQuestion;
+            $params['id_entrant'] = $idEntrant;
+
+            switch ($question->id_type) {
+                case 1:
+                    $params['answers'] = $idsAnswers;
+                    break;
+
+                case 2:
+                    $params['answers'] = implode(', ', $idsAnswers);
+                    break;
+
+                case 3:
+                    $preAssoc = [];
+
+                    foreach ($idsAnswers as $item) {
+                        $preAssoc[] = $item['question_id'] . ':' . $item['answer_id'];
+                    }
+
+                    $params['answers'] = implode(', ', $preAssoc);
+                    break;
+
+                case 4:
+                    $params['answers'] = $idsAnswers;
+                    break;
+            }
+
+            $newRecordAnswer = $this->EntrantAnswers->newEntity($params);
+
+            if (!$this->EntrantAnswers->save($newRecordAnswer)) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            return $this->Core->jsonResponse(true, null);
         }
     }
 }

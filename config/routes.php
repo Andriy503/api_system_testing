@@ -121,6 +121,7 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         // testing
         $routes->connect('/verificationEntrant', ['controller' => 'Testings', 'action' => 'verificationEntrant']);
         $routes->connect('/getDataAndCheckRootUser', ['controller' => 'Testings', 'action' => 'getDataAndCheckRootUser']);
+        $routes->connect('/addAnswerEntant', ['controller' => 'Testings', 'action' => 'addAnswerEntant']);
 
     // end my routes
 
