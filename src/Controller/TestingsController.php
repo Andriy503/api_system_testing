@@ -179,16 +179,64 @@ class TestingsController extends AppController
 
             $this->Tickets->save($editT);
 
-            $entrant_answers = $this->EntrantAnswers->find()
+            $resultData = [];
+            $entrantAnswers = $this->EntrantAnswers->find()
                 ->where([
                     'id_entrant' => $idEntrant
                 ])
                 ->toArray();
 
+            foreach ($entrantAnswers as $item) {
+                $idTypeQuesiton = $this->Questions->get($item['id_question'])->id_type;
+
+                switch ($idTypeQuesiton) {
+                    case 1:
+                        $resultData[] = [
+                            'id_question' => $item['id_question'],
+                            'id_answer' => (int)$item['answers']
+                        ];
+                        break;
+
+                    case 2:
+                        $resultData[] = [
+                            'id_question' => $item['id_question'],
+                            'id_answer' => explode(', ', $item['answers'])
+                        ];
+                        break;
+
+                    case 3:
+                        // ['1:1', '2:2', '3:3', '4:4']
+                        $explodeAnswers = explode(', ', $item['answers']);
+                        $fullAssoc = [];
+
+                        foreach ($explodeAnswers as $eAnswer) {
+                            $assoc = explode(':', $eAnswer);
+
+                            $fullAssoc[] = [
+                                'id_question' => $assoc[0],
+                                'id_answer' => $assoc[1]
+                            ];
+                        }
+
+                        $resultData[] = [
+                            'id_question' => $item['id_question'],
+                            'associations' => $fullAssoc
+                        ];
+                        break;
+
+                    case 4:
+                        $resultData[] = [
+                            'id_question' => $item['id_question'],
+                            'word' => $item['answers']
+                        ];
+                        break;
+                }
+            }
+
             return $this->Core->jsonResponse(true, 'success', [
                 'questions' => $questions,
                 'ticket' => $ticket,
-                'entrant_answers' => $entrant_answers
+                'entrant_answers' => $resultData
             ]);
         }
     }
@@ -227,7 +275,7 @@ class TestingsController extends AppController
                     $preAssoc = [];
 
                     foreach ($idsAnswers as $item) {
-                        $preAssoc[] = $item['question_id'] . ':' . $item['answer_id'];
+                        $preAssoc[] = $item['id_question'] . ':' . $item['id_answer'];
                     }
 
                     $params['answers'] = implode(', ', $preAssoc);
