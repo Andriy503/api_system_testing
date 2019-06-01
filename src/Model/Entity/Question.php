@@ -31,7 +31,6 @@ class Question extends Entity
     protected $_accessible = [
         'title' => true,
         'pre_img' => true,
-        'rating' => true,
         'points' => true,
         'id_ticket' => true,
         'id_type' => true,

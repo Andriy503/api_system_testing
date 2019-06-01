@@ -77,11 +77,6 @@ class QuestionsTable extends Table
             ->allowEmptyString('pre_img');
 
         $validator
-            ->integer('rating')
-            ->requirePresence('rating', 'create')
-            ->allowEmptyString('rating', false);
-
-        $validator
             ->integer('points')
             ->requirePresence('points', 'create')
             ->allowEmptyString('points', false);

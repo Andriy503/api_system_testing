@@ -23,9 +23,6 @@ class Questions extends AbstractMigration
                     'default' => null,
                     'null' => true
                 ])
-                ->addColumn('rating' , 'integer', [
-                    'null' => false
-                ])
                 ->addColumn('id_ticket', 'integer')
                 ->addColumn('id_type', 'integer')
                 ->addForeignKey('id_ticket', 'tickets')

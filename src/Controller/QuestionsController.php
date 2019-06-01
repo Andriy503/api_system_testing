@@ -20,6 +20,8 @@ class QuestionsController extends AppController
         parent::initialize();
 
         $this->loadModel('Questions');
+        $this->loadModel('Answers');
+        $this->loadModel('Bundles');
     }
 
     public function getQuestions() {
@@ -110,6 +112,22 @@ class QuestionsController extends AppController
             } catch (\Exception $e) {
                 return $this->Core->jsonResponse(false, 'Connection Error');
             }
+
+            if ($question->id_type === 3) {
+                $answer = $this->Answers->find()
+                    ->where([
+                        'id_question' => $question->id
+                    ])
+                    ->first();
+
+                $this->Bundles->deleteAll([
+                    'id_answer' => $answer->id
+                ]);
+            }
+
+            $this->Answers->deleteAll([
+                'id_question' => $question->id
+            ]);
 
             if ($this->Questions->delete($question)) {
                 return $this->Core->jsonResponse(true, 'Питання видалено!');

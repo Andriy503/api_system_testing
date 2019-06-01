@@ -63,6 +63,11 @@ class TicketsController extends AppController
     public function addTicket() {
         if ($this->request->is('POST')) {
             $params = $this->request->getData();
+            $time = (int)$this->request->getData('time_of_passing', false);
+
+            if ($time > 60) {
+                return $this->Core->jsonResponse(false, 'Час проходення не може бути більший ніж 1 година!');
+            }
 
             $isUniqueTitleSpicialty = !$this->Tickets->exists([
                 'title' => $params['title'],
@@ -85,6 +90,8 @@ class TicketsController extends AppController
                     'Courses'
                 ]
             ]);
+
+            $newTicket['count_questions_marge'] = 0;
 
             return $this->Core->jsonResponse(true, 'Запит доданий!', [
                 'ticket' => $newTicket
