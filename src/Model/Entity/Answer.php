@@ -30,6 +30,7 @@ class Answer extends Entity
         'current_answer' => true,
         'id_question' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+        'pre_img' => true
     ];
 }

@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Filesystem\Folder;
+use claviska\SimpleImage;
 
 /**
  * Answers Controller
@@ -53,6 +55,9 @@ class AnswersController extends AppController
         if ($this->request->is('POST')) {
             $params = $this->request->getData();
             $idQuestion = $this->request->getData('id_question', false);
+            $preImg = $this->request->getData('pre_img', false);
+
+            $params['current_answer'] = ($params['current_answer'] === '1') ? true : false;
 
             try {
                 $question = $this->Questions->get($idQuestion);
@@ -67,6 +72,16 @@ class AnswersController extends AppController
             }
 
             $answer = $this->Answers->newEntity($params);
+
+            if ($preImg) {
+                $resultSavedImage = $this->_processavedImage($preImg);
+
+                if (!$resultSavedImage['success']) {
+                    return $this->Core->jsonResponse(false, $resultSavedImage['message']);
+                }
+
+                $answer['pre_img'] = $resultSavedImage['path']; // save page answer
+            }
 
             if (!$this->Answers->save($answer)) {
                 return $this->Core->jsonResponse(false, $this->_parseEntityErrors($answer->getErrors()));
@@ -333,5 +348,61 @@ class AnswersController extends AppController
         );
 
         $this->Questions->save($editQuestionFulling);
+    }
+
+    private function _processavedImage($imageFile) {
+        if ($imageFile['error'] !== UPLOAD_ERR_OK) {
+            return [
+                'success' => false,
+                'message' => 'Не вдалося завантажити зображення!'
+            ];
+        }
+
+        if ($imageFile['size'] > 2048 * 1024) {
+            return [
+                'success' => false,
+                'message' => 'Розмір зображення має бути менше 2Мб'
+            ];
+        }
+
+        $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
+        if (!in_array(strtolower($extension), ['png', 'jpg', 'jpeg'], true)) {
+            return [
+                'success' => false,
+                'message' => 'Неправильне розширення зображення потрібно .jpg або .png або .jpeg'
+            ];
+        }
+
+        $rootPath = WWW_ROOT;
+        $folderPath = 'upload' . DS . 'answers-images';
+
+        (new Folder($rootPath . $folderPath, true)); // create folder
+
+        $fileName = uniqid("", true) . '.' . strtolower($extension);
+
+        try {
+            $image = new SimpleImage();
+
+            $image
+                ->fromFile($imageFile['tmp_name'])
+                // ->resize(400, 300)
+                ->toFile($folderPath . DS . $fileName, 'image/jpeg', 85);
+
+            $exif = $image->getExif();
+
+        } catch (\Exception $err) {
+            return [
+                'success' => false,
+                'message' => $err->getMessage()
+            ];
+        }
+
+        $fullPathImg = DS . $folderPath . DS . $fileName;
+
+        return [
+            'success' => true,
+            'message' => null,
+            'path' => $fullPathImg
+        ];
     }
 }

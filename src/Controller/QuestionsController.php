@@ -209,7 +209,7 @@ class QuestionsController extends AppController
         $rootPath = WWW_ROOT;
         $folderPath = 'upload' . DS . 'questions-images';
 
-        (new Folder($rootPath . $folderPath, true));
+        (new Folder($rootPath . $folderPath, true)); // create folder
 
         $fileName = uniqid("", true) . '.' . strtolower($extension);
 

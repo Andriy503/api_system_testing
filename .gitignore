@@ -39,4 +39,4 @@ nbproject/*
 # Sass preprocessor
 .sass-cache/
 
-/webroot/upload/questions-images/
+/webroot/upload/
