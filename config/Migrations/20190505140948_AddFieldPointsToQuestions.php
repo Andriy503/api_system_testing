@@ -18,7 +18,7 @@ class AddFieldPointsToQuestions extends AbstractMigration
             $table
                 ->addColumn('points', 'integer', [
                     'null' => false,
-                    'after' => 'rating'
+                    'after' => 'id_type'
                 ])
                 ->update();
         }

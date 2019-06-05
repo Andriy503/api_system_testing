@@ -26,7 +26,8 @@ class TestingsController extends AppController
             [
                 'verificationEntrant',
                 'getDataAndCheckRootUser',
-                'addAnswerEntant'
+                'addAnswerEntant',
+                'resultTesting'
             ]
         );
     }
@@ -117,7 +118,6 @@ class TestingsController extends AppController
             } catch (\Exception $e) {
                 return $this->Core->jsonResponse(false, 'Connection Error');
             }
-
 
             $entrantToTicket = $this->EntrantToTicket->find()
                 ->contain('Tickets')
@@ -293,6 +293,16 @@ class TestingsController extends AppController
             }
 
             return $this->Core->jsonResponse(true, null);
+        }
+    }
+
+    public function resultTesting() {
+        if ($this->request->is('POST')) {
+            $answersEntrant = $this->request->getData();
+
+            return $this->Core->jsonResponse(true, 'success', [
+                'answers entrant' => $answersEntrant
+            ]);
         }
     }
 }

@@ -26,6 +26,8 @@ class Bundle extends Entity
     protected $_accessible = [
         'a_question' => true,
         'a_answer' => true,
-        'id_answer' => true
+        'id_answer' => true,
+        'q_pre_img' => true,
+        'a_pre_img' => true
     ];
 }
