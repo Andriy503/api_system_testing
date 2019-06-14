@@ -297,11 +297,53 @@ class TestingsController extends AppController
     }
 
     public function resultTesting() {
-        if ($this->request->is('POST')) {
-            $answersEntrant = $this->request->getData();
+        if ($this->request->is('GET')) {
+            $idEntrant = $this->request->getQuery('id_entrant', false);
+
+            if (!is_numeric($idEntrant)) {
+                return $this->Core->jsonResponse(false, 'Помилка сервера!');
+            }
+
+            // перемикання полів
+                $bindTicketEntity = $this->EntrantToTicket->find()
+                    ->where([
+                        'id_ticket' => $idEntrant
+                    ])
+                    ->first();
+
+                $editBindTicket = $this->EntrantToTicket->patchEntity($bindTicketEntity, [
+                    'is_done' => true
+                ]);
+
+                $this->EntrantToTicket->save($editBindTicket);
+
+                // tickets
+                $ticket = $this->Tickets->get($editBindTicket->id_ticket);
+
+                $editTicketIsPasset = $this->Tickets->patchEntity($ticket, [
+                    'is_progress' => false
+                ]);
+
+                $this->Tickets->save($editTicketIsPasset);
+
+                // entrant
+                $entrant = $this->Entrants->get($idEntrant);
+
+                $editEntrant = $this->Entrants->patchEntity($entrant, [
+                    'is_passed' => true
+                ]);
+
+                $this->Entrants->save($editEntrant);
+            // завершення
+
+            $entrantAnswers = $this->EntrantAnswers->find()
+                ->where([
+                    'id_entrant' => $idEntrant
+                ])
+                ->toArray();
 
             return $this->Core->jsonResponse(true, 'success', [
-                'answers entrant' => $answersEntrant
+                'id entrant' => $idEntrant
             ]);
         }
     }

@@ -22,7 +22,9 @@ class AdminUsersController extends AppController
         $this->loadModel('AdminUsers');
         $this->loadModel('EducationalSubdivisions');
 
-        $this->Auth->allow(['login', 'registration']);
+        $this->Auth->allow([
+            'login', 'registration'
+        ]);
     }
 
     public function login () {
