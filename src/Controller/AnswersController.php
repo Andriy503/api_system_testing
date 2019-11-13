@@ -74,7 +74,7 @@ class AnswersController extends AppController
             $answer = $this->Answers->newEntity($params);
 
             if ($preImg) {
-                $resultSavedImage = $this->_processavedImage($preImg);
+                $resultSavedImage = $this->_processavedImage($preImg, 'answers-images');
 
                 if (!$resultSavedImage['success']) {
                     return $this->Core->jsonResponse(false, $resultSavedImage['message']);
@@ -240,23 +240,54 @@ class AnswersController extends AppController
 
     public function addBundles() {
         if ($this->request->is('POST')) {
-            $data = $this->request->getData('data', false);
             $id_question = $this->request->getData('id_question', false);
+            $assoc = json_decode($this->request->getData('data', []));
+            $images = $this->request->getData(); unset($images['data']); unset($images['id_question']);
+
+            if (!is_numeric($id_question)) {
+                return $this->Core->jsonResponse(false, 'Connection Error');
+            }
+
+            $validAssoc = [];
+            foreach($assoc as $index => $item) {
+                $fields = [];
+                $fields['a_question'] = $item->a_question;
+                $fields['a_answer'] = $item->a_answer;
+
+                if (isset($images['q_pre_img_' . $index])) {
+                    $resSaved = $this->_processSavedImage($images['q_pre_img_' . $index]);
+
+                    if (!$resSaved['success']) {
+                        return $this->Core->jsonResponse(false, $resSaved['message']);
+                    }
+
+                    $fields['q_pre_img'] = $resSaved['path'];
+                }
+
+                if (isset($images['a_pre_img_' . $index])) {
+                    $resSaved = $this->_processSavedImage($images['a_pre_img_' . $index]);
+
+                    if (!$resSaved['success']) {
+                        return $this->Core->jsonResponse(false, $resSaved['message']);
+                    }
+
+                    $fields['a_pre_img'] = $resSaved['path'];
+                }
+
+
+                array_push($validAssoc, $fields);
+            }
 
             $answer = $this->Answers->newEntity([
                 'id_question' => $id_question,
                 'title' => ''
             ]);
 
-            if (!is_numeric($id_question) || !$data || !is_array($data)) {
-                return $this->Core->jsonResponse(false, 'Connection Error');
-            }
-
             if (!$this->Answers->save($answer)) {
                 return $this->Core->jsonResponse(false, $this->_parseEntityErrors($answer->getErrors()));
             }
 
-            foreach ($data as $item) {
+            foreach ($validAssoc as $item) {
                 $newBundle = $this->Bundles->newEntity(
                     array_merge($item, [
                         'id_answer' => $answer->id
@@ -270,7 +301,7 @@ class AnswersController extends AppController
 
             $this->checkingFullingQuestion($id_question);
 
-            return $this->Core->jsonResponse(true, 'Асоціації додані!');
+            return $this->Core->jsonResponse(true, 'Асоціації додано!');
         }
     }
 
@@ -350,7 +381,7 @@ class AnswersController extends AppController
         $this->Questions->save($editQuestionFulling);
     }
 
-    private function _processavedImage($imageFile) {
+    private function _processavedImage($imageFile, $folderName) {
         if ($imageFile['error'] !== UPLOAD_ERR_OK) {
             return [
                 'success' => false,
@@ -374,7 +405,110 @@ class AnswersController extends AppController
         }
 
         $rootPath = WWW_ROOT;
-        $folderPath = 'upload' . DS . 'answers-images';
+        $folderPath = 'upload' . DS . $folderName;
+
+        (new Folder($rootPath . $folderPath, true)); // create folder
+
+        $fileName = uniqid("", true) . '.' . strtolower($extension);
+
+        try {
+            $image = new SimpleImage();
+
+            $image
+                ->fromFile($imageFile['tmp_name'])
+                // ->resize(400, 300)
+                ->toFile($folderPath . DS . $fileName, 'image/jpeg', 85);
+
+            $exif = $image->getExif();
+
+        } catch (\Exception $err) {
+            return [
+                'success' => false,
+                'message' => $err->getMessage()
+            ];
+        }
+
+        $fullPathImg = DS . $folderPath . DS . $fileName;
+
+        return [
+            'success' => true,
+            'message' => null,
+            'path' => $fullPathImg
+        ];
+    }
+
+    public function multipleSavedImages() {
+        $field = $this->request->getData('field', false);
+        $bundleId = $this->request->getData('bundle_id', false);
+        $image = $this->request->getData('image', false);
+        $id_question = $this->request->getData('id_question', false);
+        $data = [];
+
+        if ($image) {
+            $resultSavedImage = $this->_processavedImage($image, 'bundles-images');
+
+            if (!$resultSavedImage['success']) {
+                return $this->Core->jsonResponse(false, $resultSavedImage['message']);
+            }
+
+            $data[$field . '_pre_img'] = $resultSavedImage['path']; // save page answer
+        }
+
+        if ($bundleId) { // update
+            $bundle = $this->Bundles->get($bundleId);
+
+            $updateBunble = $this->Bundles->patchEntity($bundle, $data);
+
+            if (!$this->Bundles->save($updateBunble)) {
+                return $this->Core->jsonResponse(false, 'Помилка сервера!');
+            }
+        } else { // add
+            $answer = $this->Answers->newEntity([
+                'id_question' => $id_question,
+                'title' => ''
+            ]);
+
+            if (!$this->Answers->save($answer)) {
+                return $this->Core->jsonResponse(false, $this->_parseEntityErrors($answer->getErrors()));
+            }
+
+            $data['id_answer'] = $answer->id;
+
+            $newBundle = $this->Bundles->newEntity($data);
+
+            if (!$this->Bundles->save($newBundle)) {
+                return $this->Core->jsonResponse(false, $this->_parseEntityErrors($newBundle->getErrors()));
+            }
+        }
+
+        return $this->Core->jsonResponse(true, 'Зображення додано!');
+    }
+
+    private function _processSavedImage($imageFile) {
+        if ($imageFile['error'] !== UPLOAD_ERR_OK) {
+            return [
+                'success' => false,
+                'message' => 'Не вдалося завантажити зображення!'
+            ];
+        }
+
+        if ($imageFile['size'] > 2048 * 1024) {
+            return [
+                'success' => false,
+                'message' => 'Розмір зображення має бути менше 2Мб'
+            ];
+        }
+
+        $extension = pathinfo($imageFile['name'], PATHINFO_EXTENSION);
+        if (!in_array(strtolower($extension), ['png', 'jpg', 'jpeg'], true)) {
+            return [
+                'success' => false,
+                'message' => 'Неправильне розширення зображення потрібно .jpg або .png або .jpeg'
+            ];
+        }
+
+        $rootPath = WWW_ROOT;
+        $folderPath = 'upload' . DS . 'bundles-images';
 
         (new Folder($rootPath . $folderPath, true)); // create folder
 

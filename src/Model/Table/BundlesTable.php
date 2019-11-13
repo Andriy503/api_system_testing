@@ -57,15 +57,13 @@ class BundlesTable extends Table
 
         $validator
             ->scalar('a_question')
-            ->maxLength('a_question', 255)
-            ->requirePresence('a_question', 'create')
-            ->allowEmptyString('a_question', false);
+            ->maxLength('a_question', 255);
+            // ->allowEmptyString('a_question', false);
 
         $validator
             ->scalar('a_answer')
-            ->maxLength('a_answer', 255)
-            ->requirePresence('a_answer', 'create')
-            ->allowEmptyString('a_answer', false);
+            ->maxLength('a_answer', 255);
+            // ->allowEmptyString('a_answer', false);
 
         $validator
             ->integer('id_answer')

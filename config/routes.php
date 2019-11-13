@@ -111,6 +111,7 @@ Router::scope('/api/v1', function (RouteBuilder $routes) {
         $routes->connect('/updateAnswer', ['controller' => 'Answers', 'action' => 'updateAnswer']);
         $routes->connect('/addBundles', ['controller' => 'Answers', 'action' => 'addBundles']);
         $routes->connect('/updateBundle', ['controller' => 'Answers', 'action' => 'updateBundle']);
+        $routes->connect('/multipleSavedImages', ['controller' => 'Answers', 'action' => 'multipleSavedImages']);
 
         // entrants
         $routes->connect('/getEntrants', ['controller' => 'Entrants', 'action' => 'getEntrants']);
